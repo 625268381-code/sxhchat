@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Galchat - 沈星回</title>
+<style>:root{--sprite-bottom:28;--sprite-left:50;--sprite-scale:1}*{margin:0;padding:0;box-sizing:border-box}html,body{width:100vw;height:100vh;overflow:hidden;font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#000}#scene{width:100vw;height:100vh;position:relative;overflow:hidden}#background{position:absolute;inset:0;background-color:#4a3a50;background-size:cover;background-position:center;z-index:0}#background::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,200,160,0.06) 0%,rgba(30,20,40,0.20) 100%);pointer-events:none}#sprite-area{position:absolute;inset:0;z-index:1;pointer-events:none}#sprite-single{display:none;position:absolute;bottom:calc(var(--sprite-bottom,28)*1vh);left:calc(var(--sprite-left,50)*1%);translate:-50% 0;width:min(40vw,500px);height:min(55vh,700px);scale:var(--sprite-scale,1);filter:drop-shadow(0 6px 8px rgba(0,0,0,0.15))}#sprite-single.active{display:block}.sprite-face{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:breathe 4s ease-in-out infinite}@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}#ui-layer{position:absolute;inset:auto 0 0 0;z-index:10}#dialog-box{position:relative;margin:0 5vw;min-height:22vh;max-height:28vh;background:rgba(10,10,25,0.78);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.10);border-radius:12px 12px 0 0;padding:24px 28px 20px;display:flex;flex-direction:column;animation:dialog-rise 0.5s ease-out}@keyframes dialog-rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}#name-tag{position:absolute;top:-18px;left:18px;background:rgba(15,15,35,0.88);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:4px 16px;z-index:1}#cname{color:rgba(220,200,255,0.95);font-size:14px;font-weight:700;letter-spacing:0.5px}#dtext{color:#e8e8f0;font-size:17px;line-height:1.85;overflow-y:auto;flex:1;word-break:break-word}#dtext .gal-dialog{color:#ffffff;font-size:17px;font-weight:500}#dtext .cursor{display:inline-block;width:2px;height:18px;background:rgba(200,180,255,0.8);vertical-align:text-bottom;margin-left:2px;animation:blink 0.6s steps(1) infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}#input-row{display:flex;align-items:center;gap:12px;margin:0 5vw;padding:12px 26px;background:rgba(10,10,25,0.65);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.06)}#uinput{flex:1;border:none;border-bottom:2px solid rgba(255,255,255,0.18);background:transparent;color:#ffffff;font-size:16px;padding:8px 0;outline:none;font-family:inherit;resize:none}#uinput::placeholder{color:rgba(255,255,255,0.28)}#uinput:focus{border-bottom-color:rgba(180,150,255,0.65)}#uinput:disabled{opacity:0.3;cursor:not-allowed}#sbtn{background:none;border:none;color:rgba(255,255,255,0.55);cursor:pointer;padding:6px;border-radius:50%;transition:color 0.2s,background 0.2s;display:flex;align-items:center;flex-shrink:0}#sbtn:hover{color:rgba(200,170,255,0.95);background:rgba(255,255,255,0.06)}#sbtn:disabled{opacity:0.2;cursor:not-allowed}</style>
+</head>
+<body>
+<div id="scene">
+<div id="background"></div>
+<div id="sprite-area"><div id="sprite-single"><img id="face-a" class="sprite-face" src="" alt=""></div></div>
+<div id="ui-layer">
+<div id="dialog-box"><div id="name-tag"><span id="cname"></span></div><p id="dtext"></p></div>
+<div id="input-row">
+<textarea id="uinput" placeholder="请输入你的回应…" rows="1"></textarea>
+<button id="sbtn" aria-label="发送"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+</div></div></div>
+<script>
+(()=>{
+const I={"background":"https://i.imgs.ovh/2026/07/07/8261ade7f75852e2f126df475f7fb5d4.png","neutral":"https://i.imgs.ovh/2026/07/07/4a0e302a945a66bfd0543d1f2cfeeba0.png"};
+let h=[],e={},$=id=>document.getElementById(id);
+
+function init(){
+e.bg=$('background');e.dt=$('dtext');e.ui=$('uinput');e.sb=$('sbtn');e.cn=$('cname');
+e.a=$('face-a');e.sc=$('sprite-single');
+e.cn.textContent='沈星回';
+if(I.background)e.bg.style.backgroundImage='url('+I.background+')';
+if(I.neutral){e.a.src=I.neutral;e.sc.classList.add('active');}
+e.sb.onclick=send;e.ui.onkeydown=ev=>{if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();send();}};
+r('你好，我是沈星回。');n();
+}
+function n(){e.ui.disabled=e.sb.disabled=false;e.ui.focus();}
+function f(){e.ui.disabled=e.sb.disabled=true;}
+function r(t){e.dt.innerHTML='';let p=document.createElement('p');p.className='gal-dialog';p.textContent=t;e.dt.appendChild(p);let c=document.createElement('span');c.className='cursor';e.dt.appendChild(c);}
+
+async function send(){
+    let t=e.ui.value.trim();if(!t)return;
+    e.ui.value='';f();
+    h.push({role:'user',content:t});
+    
+    try {
+        let u=localStorage.getItem('g_llm_url'),k=localStorage.getItem('g_llm_key');
+        if(!u||!k)throw new Error('API信息未配置');
+        
+        // 请求后端的 /chat 接口
+        let response = await fetch('/chat', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                messages: h,
+                api_url: u,
+                api_key: k,
+                model: 'gemini-2.5-pro' // 指定模型
+            })
+        });
+        
+        let data = await response.json();
+        if(!response.ok) {
+            throw new Error(data.error || 'API请求失败');
+        }
+        
+        let content = data.choices?.[0]?.message?.content || '（无回复）';
+        h.push({role:'assistant',content:content});
+        r(content);
+    } catch(err) {
+        r('抱歉，连接出错了: ' + err.message + '。请检查API地址、密钥和网络。');
+    } finally { n(); }
+}
+
+// 首次使用显示配置页
+if(!localStorage.getItem('g_llm_url')){
+document.body.insertAdjacentHTML('beforeend','<div id="sm" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#fff;font-family:sans-serif"><div style="background:#1a1a2e;padding:30px;border-radius:15px;width:90%;max-width:500px"><h2 style="text-align:center;margin-bottom:25px;color:#e0e0ff">API 配置</h2><div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px">模型 URL</label><input id="lu" type="text" placeholder="https://goldenglow.webn.cc/v1" style="width:100%;padding:10px;border-radius:5px;border:1px solid #4a4a6e;background:#10101e;color:#fff"></div><div style="margin-bottom:15px"><label style="display:block;margin-bottom:5px">模型 Key</label><input id="lk" type="password" placeholder="sk-..." style="width:100%;padding:10px;border-radius:5px;border:1px solid #4a4a6e;background:#10101e;color:#fff"></div><button id="sc" style="width:100%;padding:12px;border-radius:8px;border:none;background:#4a69ff;color:#fff;font-size:16px;cursor:pointer">保存并启动</button></div></div>');
+$('lu').value=localStorage.getItem('g_llm_url')||'https://goldenglow.webn.cc/v1';
+$('lk').value=localStorage.getItem('g_llm_key')||'';
+$('sc').onclick=()=>{let u=$('lu').value.trim(),k=$('lk').value.trim();if(!u||!k)return alert('URL和Key为必填项');localStorage.setItem('g_llm_url',u);localStorage.setItem('g_llm_key',k);document.getElementById('sm').remove();init();};
+}else init();
+})();
+</script>
+</body>
+</html>
